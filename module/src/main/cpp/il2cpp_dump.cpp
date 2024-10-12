@@ -325,9 +325,9 @@ std::string dump_type(const Il2CppType *type) {
 void il2cpp_api_init(void *handle) {
     LOGI("il2cpp_handle: %p", handle);
     init_il2cpp_api(handle);
-    if (a5bd30_wasting_your_life) {
+    if (il2cpp_domain_get_assemblies) {
         Dl_info dlInfo;
-        if (dladdr((void *) a5bd30_wasting_your_life, &dlInfo)) {
+        if (dladdr((void *) il2cpp_domain_get_assemblies, &dlInfo)) {
             il2cpp_base = reinterpret_cast<uint64_t>(dlInfo.dli_fbase);
         }
         LOGI("il2cpp_base: %" PRIx64"", il2cpp_base);
@@ -347,7 +347,7 @@ void il2cpp_dump(const char *outDir) {
     LOGI("dumping...");
     size_t size;
     auto domain = il2cpp_domain_get();
-    auto assemblies = a5bd30_wasting_your_life(domain, &size);
+    auto assemblies = il2cpp_domain_get_assemblies(domain, &size);
     std::stringstream imageOutput;
     for (int i = 0; i < size; ++i) {
         auto image = il2cpp_assembly_get_image(assemblies[i]);
@@ -417,7 +417,7 @@ void il2cpp_dump(const char *outDir) {
         }
     }
     LOGI("write dump file");
-    auto outPath = std::string(outDir).append("/files/dump.cs");
+    auto outPath = std::string(outDir).append("/files/pososi.cs");
     std::ofstream outStream(outPath);
     outStream << imageOutput.str();
     auto count = outPuts.size();
